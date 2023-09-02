@@ -1,0 +1,31 @@
+#!/bin/bash
+
+del() {
+    display_help() {
+        echo "Usage: del dir-name or file-name"
+        echo
+        echo "Instead of irreversibly removing the files, it moves them to a trash bin folder"
+        echo "Will add -v tag in the future, now it will be selected as the default"
+        echo
+    }
+
+    if [ "$#" -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+        display_help
+        exit 0
+    fi
+
+    # Check for existence of TrashBin and create if it doesn't exist
+    if [ ! -d "$HOME/TrashBin/" ]; then
+        mkdir "$HOME/TrashBin/"
+    fi
+
+    DIR_NAME=$1
+    mv -v "$DIR_NAME" "$HOME/TrashBin/"
+}
+
+# If this script is being sourced from another script or shell, the function will be available for use.
+# If this script is being run directly (i.e., ./scriptname.sh), it will execute the function.
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    del "$@"
+fi
+

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+trash_compactor() {
+    display_help() {
+        echo "Usage: trash_compactor [options]"
+        echo
+        echo "Will use rm to clean your Trash Bin folder"
+        echo "Options:"
+        echo "  -v, --verbose    Display verbose messages"
+        echo "  -f, --force      Force delete without asking for confirmation"
+        echo "  -h, --help       Display this help and exit"
+        echo
+    }
+
+    VERBOSE=0
+    FORCE=0
+
+    while [[ "$#" -gt 0 ]]; do
+        case $1 in
+            -v|--verbose) VERBOSE=1;;
+            -f|--force) FORCE=1;;
+            -h|--help) display_help; exit 0;;
+            *) echo "Unknown parameter passed: $1"; exit 1;;
+        esac
+        shift
+    done
+
+    echo "Contents of TrashBin:"
+    dust ~/TrashBin/
+    echo
+
+    if [ $FORCE -eq 0 ]; then
+        read -p "Do you want to delete these files? (y/n) " choice
+        case "$choice" in
+            y|Y ) ;;
+            n|N ) exit 0;;
+            * ) echo "Invalid choice"; exit 1;;
+        esac
+    fi
+
+    if [ $VERBOSE -eq 1 ]; then
+        rm -rv ~/TrashBin/* 
+    else
+        rm -r ~/TrashBin/*
+    fi
+}
+
+# If this script is being sourced from another script or shell, the function will be available for use.
+# If this script is being run directly (i.e., ./scriptname.sh), it will execute the function.
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    trash_compactor "$@"
+fi
+
