@@ -1,0 +1,51 @@
+#!/bin/bash
+
+VERBOSE=0  # Default to non-verbose
+DELETE=0  # Default to not delete
+
+# Help function to display the usage
+display_help() {
+    echo "Usage: $0 [options] <path_to_usb>"
+    echo
+    echo "Test the real capacity of a USB stick using f3write and f3check."
+    echo
+    echo "Options:"
+    echo "  -h, --help        Display this help and exit"
+    echo "  -v, --verbose     Run rm command in verbose mode"
+    echo "  -d, --delete      Delete the h2w files after checking"
+    echo
+}
+
+# Parse command line arguments
+while getopts ":vdh" opt; do
+  case $opt in
+    v) VERBOSE=1;;
+    d) DELETE=1;;
+    h) display_help; exit 0;;
+    \?) echo "Invalid option -$OPTARG" >&2; exit 1;;
+  esac
+done
+
+shift $((OPTIND-1))  # Move past the options to the positional arguments
+
+USB_PATH="$1"
+
+# Check if USB_PATH is provided
+if [ -z "$USB_PATH" ]; then
+    display_help
+    exit 1
+fi
+
+# Run f3write and then f3check
+f3write $USB_PATH && sleep 1 && echo "Will start check now" && f3read $USB_PATH && sleep 1
+
+# Check if delete option is set and run rm command accordingly
+if [ $DELETE -eq 1 ]; then
+    echo "Will delete the h2w files from media"
+    if [ $VERBOSE -eq 1 ]; then
+        rm -v $USB_PATH/*.h2w
+    else
+        rm $USB_PATH/*.h2w
+    fi
+fi
+

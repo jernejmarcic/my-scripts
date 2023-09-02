@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Help function to display the usage
+display_help() {
+    echo "Usage: $0 [option] <path_to_icon_pack>"
+    echo
+    echo "Quickly extract a tar.gz compressed icon pack to the correct folder"
+    echo
+    echo "Remeber to enter the FULL absolute PATH for it not to fail"
+    echo
+    echo "Options:"
+    echo "  -h, --help        Display this help and exit"
+    echo
+}
+# Check if no arguments or -h/--help option is given
+if [ "$#" -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    display_help
+    exit 0
+fi
+
+ICON_PATH=$1
+
+#Run the actual script
+tar xvf ICON_PATH -C ~/.local/share/icons
+
