@@ -2,25 +2,45 @@
 
 del() {
     display_help() {
-        echo "Usage: del dir-name or file-name"
+        echo "Usage: del [OPTION]... [FILE]..."
         echo
-        echo "Instead of irreversibly removing the files, it moves them to a trash bin folder"
-        echo "Will add -v tag in the future, now it will be selected as the default"
+        echo "Moves files or directories to a trash bin folder instead of deleting them."
+        echo "Supports multiple files and wildcard patterns."
         echo
+        echo "Options:"
+        echo "  -h, --help       display this help and exit"
+        echo "  -r, --recursive  delete all matching files recursively (all subfolders)"
     }
 
-    if [ "$#" -eq 0 ] || [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    if [[ "$#" -eq 0 ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
         display_help
         exit 0
     fi
 
+    # Placeholder for future recursive delete functionality
+    # if [ some condition ]; then
+    #     # handle recursive deletion
+    # fi
+
     # Check for existence of TrashBin and create if it doesn't exist
-    if [ ! -d "$HOME/TrashBin/" ]; then
-        mkdir "$HOME/TrashBin/"
+    if [[ ! -d "$HOME/TrashBin/" ]]; then
+        mkdir -p "$HOME/TrashBin/"
     fi
 
-    DIR_NAME=$1
-    mv -v "$DIR_NAME" "$HOME/TrashBin/"
+    # Loop over all arguments
+    for target in "$@"; do
+        # Generate a unique name in the trash bin to prevent overwriting
+        base_target=$(basename "$target")
+        trash_target="$HOME/TrashBin/$base_target"
+        counter=1
+        while [[ -e "$trash_target" ]]; do
+            trash_target="$HOME/TrashBin/$base_target.$counter"
+            ((counter++))
+        done
+
+        # Move the target to the TrashBin with a unique name
+        mv -v -- "$target" "$trash_target"
+    done
 }
 
 # If this script is being sourced from another script or shell, the function will be available for use.

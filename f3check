@@ -5,7 +5,7 @@ DELETE=0  # Default to not delete
 
 # Help function to display the usage
 display_help() {
-    echo "Usage: $0 [options] <path_to_usb>"
+    echo "Usage: f3check [options] <path_to_usb>"
     echo
     echo "Test the real capacity of a USB stick using f3write and f3check."
     echo
@@ -13,6 +13,7 @@ display_help() {
     echo "  -h, --help        Display this help and exit"
     echo "  -v, --verbose     Run rm command in verbose mode"
     echo "  -d, --delete      Delete the h2w files after checking"
+    echo "  -p  --parrarel    Tests out multiple USB sticks in parrarel"
     echo
 }
 

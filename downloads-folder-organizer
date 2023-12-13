@@ -1,0 +1,78 @@
+#!/bin/bash
+
+function display_help {
+    echo "Usage: $0 [OPTION]"
+    echo -e "\nThis script moves specific file types into corresponding subfolders."
+    echo
+    echo "-v, --verbose     Display detailed output of operations."
+    echo "-h, --help        Display this help and exit."
+    echo
+}
+
+function move_files {
+    local patterns=($1)
+    local destination=$2
+
+    for pattern in ${patterns[@]}; do
+        if [[ -n $(ls *.$pattern 2> /dev/null) ]]; then
+            if [[ "$VERBOSE" == "true" ]]; then
+                echo "Moving *.$pattern to $destination/"
+            fi
+            mv *.$pattern $destination/ 2>/dev/null
+        fi
+    done
+}
+
+# Check for arguments
+VERBOSE=false
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -v|--verbose) VERBOSE=true ;;
+        -h|--help) display_help; exit 0 ;;
+        *) echo "Unknown option: $1"; display_help; exit 1 ;;
+    esac
+    shift
+done
+
+# Main logic for moving files
+echo "Starting file organization..."
+
+# Windows executables
+move_files "exe msi" "executables"
+
+# Archive formats
+move_files "zip tar tar.gz tar.bz2 rar 7z" "archives"
+
+# Document formats
+move_files "odt docx xls xlsx" "docs"
+
+# Shell scripts
+move_files "sh bash zsh fish" "scripts"
+
+# E-book formats
+move_files "epub mobi azw azw3 pdf djvu" "ebooks"
+
+# Font formats
+move_files "ttf otf woff woff2 eot" "fonts"
+
+# Video formats
+move_files "mp4 mkv avi mov flv wmv" "videos"
+
+# Audio formats
+move_files "mp3 wav flac m4a aac ogg" "audio"
+
+# .run files
+move_files "run" "runner"
+
+# Web files
+move_files "html css js" "web"
+
+# Torrents
+move_files "torrent" "unsorted-torrents"
+
+# AppImages
+move_files "AppImage" "appimages"
+
+echo "File organization complete."
+
