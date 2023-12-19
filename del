@@ -5,6 +5,7 @@ del() {
         echo "Usage: del [OPTION]... [FILE]..."
         echo
         echo "Moves files or directories to a trash bin folder instead of deleting them."
+        echo "Use the `trash-compactor` script to delete the contents of your TrashBin"
         echo "Supports multiple files and wildcard patterns."
         echo
         echo "Options:"
